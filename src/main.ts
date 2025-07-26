@@ -6,6 +6,8 @@ import App from './App.vue'
 import 'bootstrap/dist/css/bootstrap.css'
 // Importa il CSS di BootstrapVue
 import 'bootstrap-vue-next/dist/bootstrap-vue-next.css'
+// Importa il CSS delle Bootstrap Icons (NUOVA RIGA)
+import 'bootstrap-icons/font/bootstrap-icons.css'
 
 // *** MODIFICA QUI: Importa 'createBootstrap' da 'bootstrap-vue-next' ***
 import { createBootstrap } from 'bootstrap-vue-next'
