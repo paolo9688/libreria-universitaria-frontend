@@ -1,53 +1,53 @@
 <!-- src/components/LibriManager.vue -->
 <template>
-  <b-container class="py-5">
-    <b-card title="Gestione Libri" class="text-center shadow-lg p-3 mb-5 bg-white rounded">
-      <b-card-text class="lead mb-4">
-        Qui puoi visualizzare, aggiungere ed eliminare i libri dal tuo database Spring Boot.
+  <b-container> <!-- RIMOSSO class="py-5" da qui -->
+    <b-card title="Gestione Libri" class="text-center shadow-lg p-3 mb-5 bg-white rounded-lg">
+      <b-card-text class="lead text-muted mb-4">
+        Qui puoi visualizzare, aggiungere ed eliminare i libri dal tuo database.
       </b-card-text>
 
       <!-- Sezione per Aggiungere un Nuovo Libro -->
-      <b-card title="Aggiungi Nuovo Libro" class="mb-4 text-left">
+      <b-card title="Aggiungi Nuovo Libro" class="mb-5 text-left shadow-sm rounded-lg">
         <b-form @submit.prevent="submitNewLibro">
-          <b-row>
+          <b-row class="mb-3">
             <b-col md="6">
               <b-form-group label="Titolo:" label-for="titolo-input">
-                <b-form-input id="titolo-input" v-model="newLibro.titolo" required></b-form-input>
+                <b-form-input id="titolo-input" v-model="newLibro.titolo" required class="rounded-pill"></b-form-input>
               </b-form-group>
             </b-col>
             <b-col md="6">
               <b-form-group label="Autore:" label-for="autore-input">
-                <b-form-input id="autore-input" v-model="newLibro.autore" required></b-form-input>
+                <b-form-input id="autore-input" v-model="newLibro.autore" required class="rounded-pill"></b-form-input>
               </b-form-group>
             </b-col>
           </b-row>
-          <b-row>
+          <b-row class="mb-3">
             <b-col md="6">
               <b-form-group label="Anno Pubblicazione:" label-for="anno-input">
-                <b-form-input id="anno-input" v-model.number="newLibro.annoPubblicazione" type="number" required></b-form-input>
+                <b-form-input id="anno-input" v-model.number="newLibro.annoPubblicazione" type="number" required class="rounded-pill"></b-form-input>
               </b-form-group>
             </b-col>
             <b-col md="6">
               <b-form-group label="Genere:" label-for="genere-input">
-                <b-form-input id="genere-input" v-model="newLibro.genere" required></b-form-input>
+                <b-form-input id="genere-input" v-model="newLibro.genere" required class="rounded-pill"></b-form-input>
               </b-form-group>
             </b-col>
           </b-row>
-          <b-row>
+          <b-row class="mb-4">
             <b-col md="6">
               <b-form-group label="Disponibile:" label-for="disponibile-check">
-                <b-form-checkbox id="disponibile-check" v-model="newLibro.disponibile" switch>
+                <b-form-checkbox id="disponibile-check" v-model="newLibro.disponibile" switch class="mt-2">
                   {{ newLibro.disponibile ? 'Sì' : 'No' }}
                 </b-form-checkbox>
               </b-form-group>
             </b-col>
             <b-col md="6">
               <b-form-group label="Prezzo:" label-for="prezzo-input">
-                <b-form-input id="prezzo-input" v-model.number="newLibro.prezzo" type="number" step="0.01" required></b-form-input>
+                <b-form-input id="prezzo-input" v-model.number="newLibro.prezzo" type="number" step="0.01" required class="rounded-pill"></b-form-input>
               </b-form-group>
             </b-col>
           </b-row>
-          <b-button type="submit" variant="primary" class="mt-3">Aggiungi Libro</b-button>
+          <b-button type="submit" variant="primary" class="mt-3 rounded-pill add-book-button">Aggiungi Libro</b-button>
         </b-form>
       </b-card>
 
@@ -64,33 +64,34 @@
       </b-alert>
 
       <!-- Sezione per la Lista dei Libri -->
-      <b-card title="Lista dei Libri" class="text-left">
+      <b-card title="Lista dei Libri" class="text-left shadow-sm rounded-lg">
         <div v-if="loading" class="text-center my-4">
-          <b-spinner label="Caricamento..."></b-spinner>
-          <p>Caricamento libri...</p>
+          <b-spinner label="Caricamento..." variant="primary"></b-spinner>
+          <p class="mt-2 text-muted">Caricamento libri...</p>
         </div>
         <div v-else-if="error" class="text-center my-4 text-danger">
           <p>Errore durante il caricamento dei libri: {{ error }}</p>
-          <b-button variant="warning" @click="fetchLibri">Riprova</b-button>
+          <b-button variant="warning" @click="fetchLibri" class="rounded-pill">Riprova</b-button>
         </div>
-        <div v-else-if="libri.length === 0" class="text-center my-4">
+        <div v-else-if="libri.length === 0" class="text-center my-4 text-muted">
           <p>Nessun libro trovato. Aggiungine uno!</p>
         </div>
         <b-table
           v-else
           striped
           hover
+          bordered
           :items="libri"
           :fields="fields"
           primary-key="id"
           responsive="sm"
+          class="table-custom-styles"
         >
           <template #cell(disponibile)="data">
-            <!-- Usa un <i> tag con le classi Bootstrap Icons -->
             <i :class="['bi', data.item.disponibile ? 'bi-check-circle-fill text-success' : 'bi-x-circle-fill text-danger']"></i>
           </template>
           <template #cell(actions)="row">
-            <b-button size="sm" variant="danger" @click="confirmDelete(row.item.id)" class="mr-1">
+            <b-button size="sm" variant="danger" @click="confirmDelete(row.item.id)" class="rounded-pill delete-button">
               Elimina
             </b-button>
           </template>
@@ -99,17 +100,16 @@
     </b-card>
 
     <!-- Modale di conferma eliminazione -->
-    <b-modal id="delete-modal" title="Conferma Eliminazione" @ok="deleteLibro">
-      Sei sicuro di voler eliminare il libro con ID {{ libroToDeleteId }}? Questa azione è irreversibile.
+    <b-modal id="delete-modal" title="Conferma Eliminazione" @ok="deleteLibro" ok-title="Elimina" cancel-title="Annulla" ok-variant="danger">
+      Sei sicuro di voler eliminare il libro con ID <strong>{{ libroToDeleteId }}</strong>? Questa azione è irreversibile.
     </b-modal>
   </b-container>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref, onMounted } from 'vue';
-import LibroService from '@/services/LibroService'; // Importa il servizio API
+import LibroService from '@/services/LibroService';
 
-// Importa i componenti di BootstrapVue che stai usando
 import {
   BContainer,
   BCard,
@@ -127,45 +127,54 @@ import {
   BModal
 } from 'bootstrap-vue-next';
 
-// Dati reattivi
-const libri = ref([]);
-const loading = ref(true);
-const error = ref(null);
+type AlertVariant = 'primary' | 'secondary' | 'success' | 'danger' | 'warning' | 'info' | 'light' | 'dark';
 
-const newLibro = ref({
+interface Libro {
+  id?: number;
+  titolo: string;
+  autore: string;
+  annoPubblicazione: number;
+  genere: string;
+  disponibile: boolean;
+  prezzo: number;
+}
+
+const libri = ref<Libro[]>([]);
+const loading = ref<boolean>(true);
+const error = ref<string | null>(null);
+
+const newLibro = ref<Libro>({
   titolo: '',
   autore: '',
-  annoPubblicazione: null,
+  annoPubblicazione: null as any, // Cast a any per permettere null iniziale, poi number
   genere: '',
   disponibile: true,
-  prezzo: null
+  prezzo: null as any // Cast a any per permettere null iniziale, poi number
 });
 
-const showAlert = ref(false);
-const alertMessage = ref('');
-const alertVariant = ref('info');
+const showAlert = ref<boolean>(false);
+const alertMessage = ref<string>('');
+const alertVariant = ref<AlertVariant>('info');
 
-const libroToDeleteId = ref(null); // ID del libro da eliminare
+const libroToDeleteId = ref<number | null>(null);
 
-// Campi per la tabella
 const fields = [
   { key: 'id', label: 'ID', sortable: true },
   { key: 'titolo', label: 'Titolo', sortable: true },
   { key: 'autore', label: 'Autore', sortable: true },
   { key: 'annoPubblicazione', label: 'Anno Pubblicazione', sortable: true },
   { key: 'genere', label: 'Genere', sortable: true },
-  { key: 'disponibile', label: 'Disponibile', sortable: true },
+  { key: 'disponibile', label: 'Disponibile', sortable: true }, // Questa colonna userà lo slot personalizzato
   { key: 'prezzo', label: 'Prezzo', sortable: true },
   { key: 'actions', label: 'Azioni' }
 ];
 
-// Funzioni
 const fetchLibri = async () => {
   loading.value = true;
   error.value = null;
   try {
     libri.value = await LibroService.getAllLibri();
-  } catch (err) {
+  } catch (err: any) {
     error.value = err.message || 'Si è verificato un errore sconosciuto.';
     showAlertMessage('Errore durante il caricamento dei libri!', 'danger');
   } finally {
@@ -178,31 +187,33 @@ const submitNewLibro = async () => {
     const addedLibro = await LibroService.addLibro(newLibro.value);
     showAlertMessage(`Libro "${addedLibro.titolo}" aggiunto con successo!`, 'success');
     resetNewLibroForm();
-    await fetchLibri(); // Ricarica la lista dei libri
-  } catch (err) {
+    await fetchLibri();
+  } catch (err: any) {
     showAlertMessage('Errore durante l\'aggiunta del libro!', 'danger');
     console.error('Errore aggiunta libro:', err);
   }
 };
 
-const confirmDelete = (id) => {
+const confirmDelete = (id: number) => {
   libroToDeleteId.value = id;
-  // Mostra la modale di conferma
-  // Nota: in un ambiente reale, useresti $bvModal.show('delete-modal')
-  // o un'altra API per mostrare la modale. Qui simuliamo con un alert temporaneo.
-  // Per BootstrapVueNext, potresti aver bisogno di importare useModal() o usare un ref sulla modale.
-  // Per semplicità, qui useremo una modale di conferma nativa o un approccio più diretto.
-  // Se la modale non appare, controlla la documentazione di bootstrap-vue-next per BModal.
-  document.getElementById('delete-modal')._vue_modal.show(); // Accesso diretto per test
+  const modalElement = document.getElementById('delete-modal');
+  if (modalElement && (modalElement as any)._vue_modal && typeof (modalElement as any)._vue_modal.show === 'function') {
+    (modalElement as any)._vue_modal.show();
+  } else {
+    if (confirm(`Sei sicuro di voler eliminare il libro con ID ${id}?`)) {
+      deleteLibro();
+    }
+  }
 };
+
 
 const deleteLibro = async () => {
   if (libroToDeleteId.value) {
     try {
       const message = await LibroService.deleteLibro(libroToDeleteId.value);
       showAlertMessage(message, 'success');
-      await fetchLibri(); // Ricarica la lista dei libri
-    } catch (err) {
+      await fetchLibri();
+    } catch (err: any) {
       showAlertMessage('Errore durante l\'eliminazione del libro!', 'danger');
       console.error('Errore eliminazione libro:', err);
     } finally {
@@ -215,14 +226,14 @@ const resetNewLibroForm = () => {
   newLibro.value = {
     titolo: '',
     autore: '',
-    annoPubblicazione: null,
+    annoPubblicazione: null as any,
     genere: '',
     disponibile: true,
-    prezzo: null
+    prezzo: null as any
   };
 };
 
-const showAlertMessage = (message, variant) => {
+const showAlertMessage = (message: string, variant: AlertVariant) => {
   alertMessage.value = message;
   alertVariant.value = variant;
   showAlert.value = true;
@@ -231,17 +242,15 @@ const showAlertMessage = (message, variant) => {
   }, 5000);
 };
 
-// Hook di ciclo vita: quando il componente è montato, recupera i libri
 onMounted(() => {
   fetchLibri();
 });
 </script>
 
 <style scoped>
-/* Stili di base per il layout */
+/* Rimosso py-5 da qui, il padding è gestito da App.vue */
 .py-5 {
-  padding-top: 3rem;
-  padding-bottom: 3rem;
+  /* Questo selettore non dovrebbe più essere necessario se py-5 è rimosso dal template */
 }
 
 .text-center {
@@ -252,8 +261,16 @@ onMounted(() => {
   box-shadow: 0 1rem 3rem rgba(0,0,0,.175)!important;
 }
 
+.shadow-sm {
+  box-shadow: 0 0.125rem 0.25rem rgba(0,0,0,.075)!important;
+}
+
 .p-3 {
   padding: 1rem !important;
+}
+
+.p-md-5 {
+  padding: 3rem !important; /* Più padding su schermi medi e grandi */
 }
 
 .mb-5 {
@@ -264,13 +281,17 @@ onMounted(() => {
   background-color: #fff !important;
 }
 
-.rounded {
-  border-radius: 0.25rem !important;
+.rounded-lg {
+  border-radius: 1rem !important;
 }
 
 .lead {
   font-size: 1.25rem;
   font-weight: 300;
+}
+
+.text-muted {
+  color: #6c757d !important;
 }
 
 .mb-4 {
@@ -286,7 +307,7 @@ onMounted(() => {
 }
 
 .gap-3 {
-  gap: 1rem !important; /* Spazio tra gli elementi flex */
+  gap: 1rem !important;
 }
 
 .mt-4 {
@@ -299,14 +320,42 @@ onMounted(() => {
 }
 
 .text-left {
-  text-align: left;
+  text-align: left !important;
+}
+
+.rounded-pill {
+  border-radius: 50rem !important;
+}
+
+.add-book-button, .delete-button {
+  transition: all 0.3s ease;
+  font-weight: bold;
+}
+
+.add-book-button:hover, .delete-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.table-custom-styles {
+  font-size: 0.95rem; /* Testo della tabella leggermente più piccolo */
+}
+
+.table-custom-styles th {
+  background-color: #f0f2f5; /* Sfondo per gli header della tabella */
+  color: #343a40;
+  border-bottom: 2px solid #dee2e6;
+}
+
+.table-custom-styles td {
+  vertical-align: middle; /* Allinea il contenuto delle celle al centro */
 }
 
 /* Stili per le icone di disponibilità */
-.b-icon.bi-check-circle-fill {
-  color: green;
+.bi-check-circle-fill {
+  color: #28a745; /* Verde Bootstrap */
 }
-.b-icon.bi-x-circle-fill {
-  color: red;
+.bi-x-circle-fill {
+  color: #dc3545; /* Rosso Bootstrap */
 }
 </style>
