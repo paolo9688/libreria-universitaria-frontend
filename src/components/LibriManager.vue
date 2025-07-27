@@ -91,7 +91,13 @@
             <i :class="['bi', data.item.disponibile ? 'bi-check-circle-fill text-success' : 'bi-x-circle-fill text-danger']"></i>
           </template>
           <template #cell(actions)="row">
-            <b-button size="sm" variant="danger" @click="confirmDelete(row.item.id)" class="rounded-pill delete-button">
+            <!-- MODIFICA QUI: Aggiungi un controllo per assicurarti che row.item.id sia un numero -->
+            <b-button
+              size="sm"
+              variant="danger"
+              @click="row.item.id !== undefined ? confirmDelete(row.item.id) : null"
+              class="rounded-pill delete-button"
+            >
               Elimina
             </b-button>
           </template>
