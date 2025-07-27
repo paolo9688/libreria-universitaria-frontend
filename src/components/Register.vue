@@ -1,7 +1,7 @@
 <!-- src/components/Register.vue -->
 <template>
-  <!-- Rimosso min-vh-100 dal div contenitore, ora gestito da App.vue -->
-  <div class="register-page-container d-flex justify-content-center align-items-center py-5">
+  <!-- Rimosso py-5 da qui -->
+  <div class="register-page-container d-flex justify-content-center align-items-center">
     <b-card title="Registrati" class="register-card text-center shadow-lg p-md-5 p-4 rounded-lg">
       <b-card-text class="text-muted mb-4">
         Crea un nuovo account per accedere alla libreria.
@@ -116,9 +116,11 @@ const goToLogin = () => {
 <style scoped>
 .register-page-container {
   background: linear-gradient(to right, #2575fc 0%, #6a11cb 100%);
-  /* Rimosso min-vh-100 da qui */
-  padding: 2rem 0;
+  /* Rimosso padding: 2rem 0; */
   flex-grow: 1; /* Permette al contenitore di espandersi nel flexbox di App.vue */
+  width: 100%; /* Assicura che occupi tutta la larghezza disponibile */
+  height: 100%; /* Assicura che occupi tutta l'altezza disponibile */
+  padding: 2rem 0; /* Rimesso un padding interno per la card, per dare spazio al contenuto */
 }
 
 .register-card {

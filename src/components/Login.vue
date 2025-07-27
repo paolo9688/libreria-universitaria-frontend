@@ -1,8 +1,7 @@
 <!-- src/components/Login.vue -->
 <template>
-  <!-- Rimosso min-vh-100 dal div contenitore, ora gestito da App.vue -->
-  <div class="login-page-container d-flex justify-content-center align-items-center py-5">
-    <b-card title="Accedi alla Libreria" class="login-card text-center shadow-lg p-md-5 p-4 rounded-lg">
+  <div class="login-page-container d-flex justify-content-center align-items-center">
+    <b-card title="Accedi alla Libreria" class="login-card text-center shadow-lg p-md-5 p-4 rounded-lg mx-auto my-auto">
       <b-card-text class="text-muted mb-4">
         Inserisci le tue credenziali per accedere.
       </b-card-text>
@@ -110,10 +109,11 @@ const goToRegister = () => {
 <style scoped>
 .login-page-container {
   background: linear-gradient(to right, #6a11cb 0%, #2575fc 100%); /* Gradiente di sfondo */
-  /* Rimosso min-vh-100 da qui */
-  padding: 2rem 0; /* Aggiungi padding verticale per schermi piccoli */
   flex-grow: 1; /* Permette al contenitore di espandersi nel flexbox di App.vue */
-  /* Assicurati che il d-flex, justify-content-center, align-items-center siano applicati al div esterno in App.vue */
+  width: 100%; /* Assicura che occupi tutta la larghezza disponibile */
+  /* RIMOSSO height: 100%; */
+  /* RIMOSSO min-height: 100%; */
+  padding: 0; /* Padding interno per la card, per dare spazio al contenuto */
 }
 
 .login-card {
@@ -124,6 +124,8 @@ const goToRegister = () => {
   background-color: rgba(255, 255, 255, 0.95);
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
   animation: fadeIn 0.8s ease-out;
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
 }
 
 .rounded-lg {

@@ -1,11 +1,15 @@
+/* src/style.css */
+
+/* Stili globali e reset di base */
 :root {
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
 
   color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
+  /* Rimosso colore testo e background di default per permettere al body di App.vue di gestirli */
+  /* color: rgba(255, 255, 255, 0.87); */
+  /* background-color: #242424; */
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -13,21 +17,21 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
-a {
+/* Rimosso stili globali per i link <a>, verranno gestiti da Bootstrap e App.vue */
+/* a {
   font-weight: 500;
   color: #646cff;
   text-decoration: inherit;
 }
 a:hover {
   color: #535bf2;
-}
+} */
 
+/* Modificato il body per un reset minimo, le regole di layout sono in App.vue */
 body {
   margin: 0;
-  display: flex;
-  place-items: center;
-  min-width: 320px;
-  min-height: 100vh;
+  /* Rimosso display: flex, place-items: center, min-width, min-height */
+  /* Queste regole sono ora gestite dal componente App.vue */
 }
 
 h1 {
@@ -42,7 +46,7 @@ button {
   font-size: 1em;
   font-weight: 500;
   font-family: inherit;
-  background-color: #1a1a1a;
+  background-color: #1a1a1a; /* Questo verrà sovrascritto da BootstrapVue */
   cursor: pointer;
   transition: border-color 0.25s;
 }
@@ -55,24 +59,26 @@ button:focus-visible {
 }
 
 .card {
-  padding: 2em;
+  padding: 2em; /* Questo potrebbe ancora essere un problema per b-card, ma lo vedremo */
 }
 
-#app {
+/* Rimosso stili per #app, verranno gestiti da App.vue */
+/* #app {
   max-width: 1280px;
   margin: 0 auto;
   padding: 2rem;
   text-align: center;
-}
+} */
 
+/* Mantenuto il media query per il tema chiaro, ma rimosso le regole conflittuali */
 @media (prefers-color-scheme: light) {
   :root {
     color: #213547;
     background-color: #ffffff;
   }
-  a:hover {
+  /* a:hover {
     color: #747bff;
-  }
+  } */
   button {
     background-color: #f9f9f9;
   }
