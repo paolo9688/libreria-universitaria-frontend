@@ -2,12 +2,12 @@
 <template>
   <div id="app">
     <!-- Navbar -->
-    <b-navbar toggleable="lg" type="dark" variant="dark" class="shadow-sm fixed-top">
-      <b-container>
+    <b-navbar toggleable="lg" type="dark" variant="primary" class="shadow-sm fixed-top"> <!-- Mantenuto variant="primary" come tua soluzione temporanea -->
+      <b-container class="d-flex align-items-center">
         <b-navbar-brand href="#" class="font-weight-bold text-white">Libreria Universitaria</b-navbar-brand>
         <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
         <b-collapse id="nav-collapse" is-nav>
-          <b-navbar-nav class="ml-auto">
+          <b-navbar-nav class="ml-auto align-items-center">
             <!-- Pulsanti di navigazione nella navbar -->
             <b-nav-item v-if="isAuthenticated && currentPage === 'bookList'" @click="currentPage = 'manageBooks'" class="text-white">Gestione Libri</b-nav-item>
             <b-nav-item v-if="isAuthenticated && currentPage === 'manageBooks'" @click="currentPage = 'bookList'" class="text-white">Lista Libri</b-nav-item>
@@ -37,9 +37,10 @@
 
     <!-- Footer -->
     <footer class="app-footer bg-dark text-white-50 py-3">
-      <b-container class="text-center">
+      <!-- Rimosso b-container qui, il footer si estenderà per tutta la larghezza -->
+      <div class="text-center w-100"> <!-- Aggiunto w-100 per sicurezza -->
         &copy; {{ currentYear }} Libreria Universitaria. Tutti i diritti riservati.
-      </b-container>
+      </div>
     </footer>
   </div>
 </template>
@@ -100,6 +101,7 @@ onMounted(() => {
 /* Stili globali per l'applicazione */
 html, body {
   height: 100%;
+  width: 100%; /* Assicura che il body occupi l'intera larghezza */
   margin: 0;
   padding: 0;
   overflow-x: hidden;
@@ -114,6 +116,7 @@ html, body {
   display: flex;
   flex-direction: column;
   height: 100vh;
+  width: 100%; /* Assicura che #app occupi l'intera larghezza */
   font-family: 'Inter', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -122,7 +125,7 @@ html, body {
 }
 
 .b-navbar.fixed-top {
-    height: 56px;
+    height: 56px; /* Altezza standard di una navbar Bootstrap */
     z-index: 1030;
     position: fixed;
     top: 0;
@@ -142,18 +145,47 @@ html, body {
   flex-shrink: 0;
   background-color: #343a40 !important;
   height: auto;
+  width: 100%; /* Assicura che il footer occupi l'intera larghezza */
+  /* Aggiunto display flex e justify-content-center per centrare il contenuto */
+  display: flex;
+  justify-content: center;
+  align-items: center; /* Centra verticalmente il testo nel footer */
 }
 
 .text-white-50 {
   color: rgba(255, 255, 255, 0.5) !important;
 }
 
-.navbar-nav .nav-link {
+/* Stili per i link della navbar (testo dei pulsanti) */
+.b-navbar .navbar-nav .nav-item .nav-link,
+.b-navbar .navbar-nav .nav-item .nav-link:hover,
+.b-navbar .navbar-nav .nav-item .nav-link:focus,
+.b-navbar .navbar-nav .nav-item .nav-link:active {
   padding-left: 1rem !important;
   padding-right: 1rem !important;
+  color: white !important; /* Forza il colore bianco per il testo dei pulsanti */
+  display: flex;
+  align-items: center;
+  height: 100%;
+  background-color: transparent;
+  border-radius: 0.25rem;
+}
+
+/* Aggiunto stile per il brand per assicurare che sia sempre bianco */
+.b-navbar-brand.text-white {
+    color: white !important;
+}
+
+/* Stile al passaggio del mouse per i link della navbar */
+.b-navbar .navbar-nav .nav-item .nav-link:hover,
+.b-navbar .navbar-nav .nav-item .nav-link:focus {
+  background-color: rgba(255, 255, 255, 0.1);
 }
 
 .navbar-brand {
   margin-right: 2rem !important;
+  display: flex;
+  align-items: center;
+  height: 100%;
 }
 </style>
