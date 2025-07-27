@@ -1,12 +1,12 @@
 <!-- src/components/LibriManager.vue -->
 <template>
-  <b-container> <!-- RIMOSSO class="py-5" da qui -->
+  <b-container>
     <b-card title="Gestione Libri" class="text-center shadow-lg p-3 mb-5 bg-white rounded-lg">
       <b-card-text class="lead text-muted mb-4">
-        Qui puoi visualizzare, aggiungere ed eliminare i libri dal tuo database.
+        Qui puoi aggiungere nuovi libri al tuo database.
       </b-card-text>
 
-      <!-- Sezione per Aggiungere un Nuovo Libro -->
+      <!-- Sezione per Aggiungere un Nuovo Libro (sempre visibile) -->
       <b-card title="Aggiungi Nuovo Libro" class="mb-5 text-left shadow-sm rounded-lg">
         <b-form @submit.prevent="submitNewLibro">
           <b-row class="mb-3">
@@ -63,57 +63,19 @@
         {{ alertMessage }}
       </b-alert>
 
-      <!-- Sezione per la Lista dei Libri -->
-      <b-card title="Lista dei Libri" class="text-left shadow-sm rounded-lg">
-        <div v-if="loading" class="text-center my-4">
-          <b-spinner label="Caricamento..." variant="primary"></b-spinner>
-          <p class="mt-2 text-muted">Caricamento libri...</p>
-        </div>
-        <div v-else-if="error" class="text-center my-4 text-danger">
-          <p>Errore durante il caricamento dei libri: {{ error }}</p>
-          <b-button variant="warning" @click="fetchLibri" class="rounded-pill">Riprova</b-button>
-        </div>
-        <div v-else-if="libri.length === 0" class="text-center my-4 text-muted">
-          <p>Nessun libro trovato. Aggiungine uno!</p>
-        </div>
-        <b-table
-          v-else
-          striped
-          hover
-          bordered
-          :items="libri"
-          :fields="fields"
-          primary-key="id"
-          responsive="sm"
-          class="table-custom-styles"
-        >
-          <template #cell(disponibile)="data">
-            <i :class="['bi', data.item.disponibile ? 'bi-check-circle-fill text-success' : 'bi-x-circle-fill text-danger']"></i>
-          </template>
-          <template #cell(actions)="row">
-            <!-- MODIFICA QUI: Aggiungi un controllo per assicurarti che row.item.id sia un numero -->
-            <b-button
-              size="sm"
-              variant="danger"
-              @click="row.item.id !== undefined ? confirmDelete(row.item.id) : null"
-              class="rounded-pill delete-button"
-            >
-              Elimina
-            </b-button>
-          </template>
-        </b-table>
-      </b-card>
-    </b-card>
+      <!-- Pulsante per andare alla pagina della lista dei libri -->
+      <div class="text-center mt-5">
+        <b-button variant="info" @click="goToBookList" class="rounded-pill show-list-button">
+          Visualizza Lista Libri
+        </b-button>
+      </div>
 
-    <!-- Modale di conferma eliminazione -->
-    <b-modal id="delete-modal" title="Conferma Eliminazione" @ok="deleteLibro" ok-title="Elimina" cancel-title="Annulla" ok-variant="danger">
-      Sei sicuro di voler eliminare il libro con ID <strong>{{ libroToDeleteId }}</strong>? Questa azione è irreversibile.
-    </b-modal>
+    </b-card>
   </b-container>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
+import { ref } from 'vue'; // Rimosso onMounted, fetchLibri, libri, loading, error, fields, confirmDelete, deleteLibro, libroToDeleteId, showBookList
 import LibroService from '@/services/LibroService';
 
 import {
@@ -127,10 +89,8 @@ import {
   BButton,
   BAlert,
   BRow,
-  BCol,
-  BTable,
-  BSpinner,
-  BModal
+  BCol
+  // Rimosso BTable, BSpinner, BModal
 } from 'bootstrap-vue-next';
 
 type AlertVariant = 'primary' | 'secondary' | 'success' | 'danger' | 'warning' | 'info' | 'light' | 'dark';
@@ -145,88 +105,37 @@ interface Libro {
   prezzo: number;
 }
 
-const libri = ref<Libro[]>([]);
-const loading = ref<boolean>(true);
-const error = ref<string | null>(null);
-
+// Rimosso libri, loading, error, showBookList
 const newLibro = ref<Libro>({
   titolo: '',
   autore: '',
-  annoPubblicazione: null as any, // Cast a any per permettere null iniziale, poi number
+  annoPubblicazione: null as any,
   genere: '',
   disponibile: true,
-  prezzo: null as any // Cast a any per permettere null iniziale, poi number
+  prezzo: null as any
 });
 
 const showAlert = ref<boolean>(false);
 const alertMessage = ref<string>('');
 const alertVariant = ref<AlertVariant>('info');
 
-const libroToDeleteId = ref<number | null>(null);
+// Rimosso libroToDeleteId, fields
 
-const fields = [
-  { key: 'id', label: 'ID', sortable: true },
-  { key: 'titolo', label: 'Titolo', sortable: true },
-  { key: 'autore', label: 'Autore', sortable: true },
-  { key: 'annoPubblicazione', label: 'Anno Pubblicazione', sortable: true },
-  { key: 'genere', label: 'Genere', sortable: true },
-  { key: 'disponibile', label: 'Disponibile', sortable: true }, // Questa colonna userà lo slot personalizzato
-  { key: 'prezzo', label: 'Prezzo', sortable: true },
-  { key: 'actions', label: 'Azioni' }
-];
-
-const fetchLibri = async () => {
-  loading.value = true;
-  error.value = null;
-  try {
-    libri.value = await LibroService.getAllLibri();
-  } catch (err: any) {
-    error.value = err.message || 'Si è verificato un errore sconosciuto.';
-    showAlertMessage('Errore durante il caricamento dei libri!', 'danger');
-  } finally {
-    loading.value = false;
-  }
-};
+// Rimosso fetchLibri
 
 const submitNewLibro = async () => {
   try {
     const addedLibro = await LibroService.addLibro(newLibro.value);
     showAlertMessage(`Libro "${addedLibro.titolo}" aggiunto con successo!`, 'success');
     resetNewLibroForm();
-    await fetchLibri();
+    // Non ricarichiamo la lista qui, perché è in un altro componente
   } catch (err: any) {
     showAlertMessage('Errore durante l\'aggiunta del libro!', 'danger');
     console.error('Errore aggiunta libro:', err);
   }
 };
 
-const confirmDelete = (id: number) => {
-  libroToDeleteId.value = id;
-  const modalElement = document.getElementById('delete-modal');
-  if (modalElement && (modalElement as any)._vue_modal && typeof (modalElement as any)._vue_modal.show === 'function') {
-    (modalElement as any)._vue_modal.show();
-  } else {
-    if (confirm(`Sei sicuro di voler eliminare il libro con ID ${id}?`)) {
-      deleteLibro();
-    }
-  }
-};
-
-
-const deleteLibro = async () => {
-  if (libroToDeleteId.value) {
-    try {
-      const message = await LibroService.deleteLibro(libroToDeleteId.value);
-      showAlertMessage(message, 'success');
-      await fetchLibri();
-    } catch (err: any) {
-      showAlertMessage('Errore durante l\'eliminazione del libro!', 'danger');
-      console.error('Errore eliminazione libro:', err);
-    } finally {
-      libroToDeleteId.value = null;
-    }
-  }
-};
+// Rimosso confirmDelete, deleteLibro
 
 const resetNewLibroForm = () => {
   newLibro.value = {
@@ -248,17 +157,16 @@ const showAlertMessage = (message: string, variant: AlertVariant) => {
   }, 5000);
 };
 
-onMounted(() => {
-  fetchLibri();
-});
+// Emette un evento per navigare alla pagina della lista libri
+const emit = defineEmits(['showBookList']);
+const goToBookList = () => {
+  emit('showBookList');
+};
+
+// Rimosso onMounted
 </script>
 
 <style scoped>
-/* Rimosso py-5 da qui, il padding è gestito da App.vue */
-.py-5 {
-  /* Questo selettore non dovrebbe più essere necessario se py-5 è rimosso dal template */
-}
-
 .text-center {
   text-align: center;
 }
@@ -276,7 +184,7 @@ onMounted(() => {
 }
 
 .p-md-5 {
-  padding: 3rem !important; /* Più padding su schermi medi e grandi */
+  padding: 3rem !important;
 }
 
 .mb-5 {
@@ -333,35 +241,15 @@ onMounted(() => {
   border-radius: 50rem !important;
 }
 
-.add-book-button, .delete-button {
+.add-book-button, .show-list-button {
   transition: all 0.3s ease;
   font-weight: bold;
 }
 
-.add-book-button:hover, .delete-button:hover {
+.add-book-button:hover, .show-list-button:hover {
   transform: translateY(-2px);
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
 }
 
-.table-custom-styles {
-  font-size: 0.95rem; /* Testo della tabella leggermente più piccolo */
-}
-
-.table-custom-styles th {
-  background-color: #f0f2f5; /* Sfondo per gli header della tabella */
-  color: #343a40;
-  border-bottom: 2px solid #dee2e6;
-}
-
-.table-custom-styles td {
-  vertical-align: middle; /* Allinea il contenuto delle celle al centro */
-}
-
-/* Stili per le icone di disponibilità */
-.bi-check-circle-fill {
-  color: #28a745; /* Verde Bootstrap */
-}
-.bi-x-circle-fill {
-  color: #dc3545; /* Rosso Bootstrap */
-}
+/* Rimosse classi relative alla tabella */
 </style>
